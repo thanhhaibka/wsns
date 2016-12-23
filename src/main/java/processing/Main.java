@@ -12,6 +12,7 @@ import java.util.List;
  * Created by prnc on 09/11/2016.
  */
 public class Main {
+
     /**
      * @return map
      * @author haint
@@ -22,7 +23,7 @@ public class Main {
         Map map= new Map(4, 100, 100, 600, 40000);
         map.initCars(30, 24);
         map.initTargets();
-        Kmean kmean= new Kmean(map.getTargets(), 20);
+        Kmean kmean= new Kmean(map.getTargets(), 20);   //number of clusters need to calculate, 20 is only for test
         List<Cluster> clusters= kmean.getClusters();
         List<Point> staticSensor= new ArrayList<Point>();
         for(Cluster cluster: clusters){

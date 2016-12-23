@@ -78,13 +78,28 @@ public class Cluster {
     }
 
     /**
+     * @param radius
      * @return
      * @author haint
      * return sensors to cover this cluster of targets.
      */
     public List<Point> coverCluster(double radius){
         List<Point> staticSensors= new ArrayList<Point>();
+        List<Point> tempPoints= new ArrayList<Point>(points);
+        Point tempCenter= centrePoint;
         //Todo find sensors to cover this cluster: how many? phuong phap thich hop?
+        double maxDistance = 0.0;
+        Point maxPoint;
+        for (Point point : tempPoints) {
+            double distance = getDistance(point);
+            maxDistance = maxDistance < distance ? distance : maxDistance;
+            maxPoint= point;
+        }
+        if(maxDistance<= radius){
+            staticSensors.add(tempCenter);
+        }else{
+            //Todo get coordinates of point on the line between center and maxPoint and have distance with maxPoint is radius
+        }
         return staticSensors;
     }
 
