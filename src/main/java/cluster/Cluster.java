@@ -84,7 +84,7 @@ public class Cluster {
      */
     public List<Point> coverCluster(double radius){
         List<Point> staticSensors= new ArrayList<Point>();
-
+        //Todo find sensors to cover this cluster: how many? phuong phap thich hop?
         return staticSensors;
     }
 

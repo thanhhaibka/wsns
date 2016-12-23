@@ -28,6 +28,20 @@ public class Main {
         for(Cluster cluster: clusters){
             staticSensor.addAll(cluster.coverCluster(map.getRadius()));
         }
+        //Todo add static sensors in map or output
         return map;
+    }
+
+    /**
+     * @param map
+     * @return List<Point>
+     * @author haint
+     * phase 2:
+     * connect static sensors with car sensors
+     */
+    private List<Point> secondPhaseProcess(Map map){
+        List<Point> connectSensors= new ArrayList<Point>();
+        //Todo find sensors to connect
+        return connectSensors;
     }
 }
