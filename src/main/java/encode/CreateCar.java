@@ -8,13 +8,13 @@ import java.util.Random;
  * Created by prnc on 20/08/2016.
  */
 public class CreateCar {
-    public static final double v = 0.15;
+    public static final double v = 15;
 
-    public static List<CarInTime> createCar(int T) {
-        Random rd = new Random();
+    public static List<CarInTime> createCar(long seed, int T) {
+        Random rd = new Random(seed);
         List<CarInTime> carInTimes = new ArrayList<CarInTime>();
-        double x = rd.nextDouble() *1;
-        double y = rd.nextDouble() *1;
+        double x = rd.nextDouble() *100;
+        double y = rd.nextDouble() *100;
         Point p = new Point(x, y);
 
         carInTimes.add(new CarInTime(x, y, 0));
@@ -56,14 +56,14 @@ public class CreateCar {
     public static Point adjust(Point point) {
         Point p= point;
         if (p.x <= 0) {
-            p.x = 0.001;
-        } else if (p.x >= 1) {
-            p.x = 0.999;
+            p.x = 0;
+        } else if (p.x >= 100) {
+            p.x = 100;
         }
         if (p.y <= 0) {
-            p.y = 0.001;
-        } else if (p.y >= 1) {
-            p.y = 0.99;
+            p.y = 0;
+        } else if (p.y >= 100) {
+            p.y = 100;
         }
         return p;
     }

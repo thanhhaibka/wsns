@@ -28,7 +28,7 @@ public class Kmean {
         return averValue;
     }
 
-    public void setAverValue() {
+    private void setAverValue() {
         int value=0;
         for (Cluster cluster: this.clusters) {
             int count=0, sum=0;
@@ -82,7 +82,7 @@ public class Kmean {
         }
     }
 
-    public List<Point> getCentrePoints(){
+    private List<Point> getCentrePoints(){
         List<Point> listCentrePoints = new ArrayList<Point>();
         for(int i = 0; i < NUM_CLUSTERS; i++){
             Point point = clusters.get(i).getCentrePoint();
@@ -91,7 +91,7 @@ public class Kmean {
         return listCentrePoints;
     }
 
-    public void updateCentrePoint(){
+    private void updateCentrePoint(){
         for(int i = 0; i < NUM_CLUSTERS; i++ ){
             double x = 0.0;
             double y = 0.0;
@@ -107,7 +107,7 @@ public class Kmean {
         }
     }
 
-    public void updateCluster(){
+    private void updateCluster(){
         for(int i = 0; i < points.size(); i++){
             Double min = Double.MAX_VALUE;
             int numCluster = 0;
@@ -125,7 +125,7 @@ public class Kmean {
         updateCentrePoint();
     }
 
-    public void clustering(){
+    private void clustering(){
         boolean finish = false;
         List<Point> oldCentrePointList = null;
         List<Point> newCentrePointList = null;

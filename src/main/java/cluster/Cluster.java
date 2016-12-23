@@ -77,6 +77,17 @@ public class Cluster {
         points.clear();
     }
 
+    /**
+     * @return
+     * @author haint
+     * return sensors to cover this cluster of targets.
+     */
+    public List<Point> coverCluster(double radius){
+        List<Point> staticSensors= new ArrayList<Point>();
+
+        return staticSensors;
+    }
+
     public void printCluster() {
         System.out.println(clusterNumber);
         System.out.println("centrePoint");
