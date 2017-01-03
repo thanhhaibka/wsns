@@ -4,7 +4,6 @@ package kruskal;
  * Created by prnc on 03/09/2016.
  */
 
-import graph.model.Vertex;
 
 import java.util.ArrayList;
 import java.util.Collections;

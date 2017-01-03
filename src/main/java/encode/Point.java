@@ -22,6 +22,10 @@ public class Point implements Comparable<Point> {
         Double y = min + (max - min) * r.nextDouble();
         return new Point(x,y);
     }
+
+    public Point(){
+
+    }
     
     public Point(double x, double y){
         this.x= x;

@@ -104,6 +104,18 @@ public class Cluster {
         return staticSensors;
     }
 
+    public static Point getPointBetweenTwoPoint(Point sourcePoint, Point destPoint, double r){
+        Point point= new Point();
+        double tan= (destPoint.y- sourcePoint.y)/(destPoint.x- sourcePoint.x);
+        double goc= Math.atan(tan);
+        double sin= Math.sin(goc);
+        double cos= Math.cos(goc);
+        double xCoor= sourcePoint.x+ r*sin;
+        double yCoor= sourcePoint.y+ r*cos;
+        System.out.println(xCoor+" "+ yCoor);
+        return point;
+    }
+
     public void printCluster() {
         System.out.println(clusterNumber);
         System.out.println("centrePoint");
@@ -113,5 +125,9 @@ public class Cluster {
             System.out.println(point.x + ", " + point.x);
         }
         System.out.println();
+    }
+
+    public static void main(String args[]){
+        getPointBetweenTwoPoint(new Point(1, 2), new Point(3, 0), 1);
     }
 }
