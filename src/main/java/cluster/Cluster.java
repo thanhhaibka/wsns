@@ -99,6 +99,7 @@ public class Cluster {
             staticSensors.add(tempCenter);
         }else{
             //Todo get coordinates of point on the line between center and maxPoint and have distance with maxPoint is radius
+
         }
         return staticSensors;
     }
