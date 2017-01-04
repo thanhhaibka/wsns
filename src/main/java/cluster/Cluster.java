@@ -13,7 +13,7 @@ public class Cluster {
     private Point centrePoint;
     private int clusterNumber;
 
-    public Cluster(){
+    public Cluster() {
 
     }
 
@@ -28,9 +28,9 @@ public class Cluster {
         return Point.getDistance(centrePoint, c.centrePoint);
     }
 
-    public double getAllDis(){
-        double d=0;
-        for (Point p: points) {
+    public double getAllDis() {
+        double d = 0;
+        for (Point p : points) {
 
         }
         return d;
@@ -83,88 +83,88 @@ public class Cluster {
      * @author haint
      * return sensors to cover this cluster of targets.
      */
-    public List<Point> coverCluster(double radius){
-        List<Point> staticSensors= new ArrayList<Point>();
-        List<Point> tempPoints= new ArrayList<Point>(points);
-        Point tempCenter= centrePoint;
+    public List<Point> coverCluster(double radius) {
+        List<Point> staticSensors = new ArrayList<Point>();
+        List<Point> tempPoints = new ArrayList<Point>(points);
+        Point tempCenter = new Point(centrePoint.x, centrePoint.y);
         //Todo find sensors to cover this cluster: how many? phuong phap thich hop?
-        while(true) {
+        while (true) {
             double maxDistance = 0.0;
             Point maxPoint = tempPoints.get(0);
             for (Point point : tempPoints) {
                 double distance = tempCenter.distanceTo(point);
-                if(maxDistance<distance){
-                    maxDistance =  distance;
+                if (maxDistance < distance) {
+                    maxDistance = distance;
                     maxPoint = point;
                 }
             }
+//            System.out.println(maxDistance);
             if (maxDistance <= radius) {
                 staticSensors.add(tempCenter);
                 break;
             } else {
                 //Todo get coordinates of point on the line between center and maxPoint and have distance with maxPoint is radius
                 Point point = getPointBetweenTwoPoint(maxPoint, tempCenter, radius);
-                for(Point p: tempPoints){
-                    //Todo use VFA to improve above point
-                }
+//                for(Point p: tempPoints){
+//                    //Todo use VFA to improve above point
+//                }
+//                System.out.println(point+" "+clusterNumber);
                 staticSensors.add(point);
                 List<Point> points = new ArrayList<Point>();
                 for (Point p : tempPoints) {
-                    if (p.distanceTo(point) > radius) {
+                    if (p.distanceTo(point)-0.5 > radius) {
                         points.add(p);
                     }
                 }
                 if (points.isEmpty()) break;
                 tempPoints = new ArrayList<Point>(points);
-                for (int i = 0; i < tempPoints.size(); i++) {
-                    double x = 0.0;
-                    double y = 0.0;
-                    for (Point p : tempPoints) {
-                        x += p.x;
-                        y += p.y;
-                    }
-                    tempCenter = new Point(x / tempPoints.size(), y / tempPoints.size());
+                double x = 0.0;
+                double y = 0.0;
+                for (Point p : tempPoints) {
+                    x += p.x;
+                    y += p.y;
                 }
+                tempCenter = new Point(x / tempPoints.size(), y / tempPoints.size());
             }
         }
         return staticSensors;
     }
 
-    public static Point getPointBetweenTwoPoint(Point sourcePoint, Point destPoint, double r){
-        Point point= new Point();
-        if(sourcePoint.x== destPoint.x){
-            List<Point> points= new ArrayList<Point>();
-            points.add(new Point(sourcePoint.x, sourcePoint.y+r));
-            points.add(new Point(sourcePoint.x, sourcePoint.y-r));
-            double minY= Math.min(sourcePoint.y, destPoint.y);
+    public Point getPointBetweenTwoPoint(Point sourcePoint, Point destPoint, double r) {
+        Point point = new Point();
+        if (sourcePoint.x == destPoint.x) {
+            List<Point> points = new ArrayList<Point>();
+            points.add(new Point(sourcePoint.x, sourcePoint.y + r));
+            points.add(new Point(sourcePoint.x, sourcePoint.y - r));
+            double minY = Math.min(sourcePoint.y, destPoint.y);
             double maxY = Math.max(sourcePoint.y, destPoint.y);
 
-            for(int i=0; i<2; i++){
-                Point p= points.get(i);
-                if((p.y>=minY && p.y<= maxY)){
-                    point=p;
+            for (int i = 0; i < 2; i++) {
+                Point p = points.get(i);
+                if ((p.y >= minY && p.y <= maxY)) {
+                    point = p;
                     break;
                 }
             }
-        }else {
-            double tan= (destPoint.y- sourcePoint.y)/(destPoint.x- sourcePoint.x);
-            double goc= Math.atan(tan);
-            double sin= Math.sin(goc);
-            double cos= Math.cos(goc);
-            List<Point> points= new ArrayList<Point>();
-            points.add(new Point(sourcePoint.x+ r*cos, sourcePoint.y+r*sin));
-            points.add(new Point(sourcePoint.x+ r*cos, sourcePoint.y-r*sin));
-            points.add(new Point(sourcePoint.x- r*cos, sourcePoint.y+r*sin));
-            points.add(new Point(sourcePoint.x- r*cos, sourcePoint.y-r*sin));
+        } else {
+            double tan = (destPoint.y - sourcePoint.y) / (destPoint.x - sourcePoint.x);
+            double goc = Math.atan(tan);
+            double sin = Math.sin(goc);
+            double cos = Math.cos(goc);
+            List<Point> points = new ArrayList<Point>();
+            points.add(new Point(sourcePoint.x + r * cos, sourcePoint.y + r * sin));
+            points.add(new Point(sourcePoint.x + r * cos, sourcePoint.y - r * sin));
+            points.add(new Point(sourcePoint.x - r * cos, sourcePoint.y + r * sin));
+            points.add(new Point(sourcePoint.x - r * cos, sourcePoint.y - r * sin));
             double minX, maxX, minY, maxY;
-            minX= Math.min(sourcePoint.x, destPoint.x);
-            maxX= Math.max(sourcePoint.x, destPoint.x);
-            minY= Math.min(sourcePoint.y, destPoint.y);
-            maxY= Math.max(sourcePoint.y, destPoint.y);
+            minX = Math.min(sourcePoint.x, destPoint.x);
+            maxX = Math.max(sourcePoint.x, destPoint.x);
+            minY = Math.min(sourcePoint.y, destPoint.y);
+            maxY = Math.max(sourcePoint.y, destPoint.y);
 
-            for(int i=0; i<4; i++){
-                Point p= points.get(i);
-                if((p.x<=maxX && p.x>=minX && p.y>=minY && p.y<= maxY)){
+            for (int i = 0; i < 4; i++) {
+                Point p = points.get(i);
+                if ((p.x <= maxX && p.x >= minX && p.y >= minY && p.y <= maxY)) {
                     point = p;
                     break;
                 }
@@ -185,17 +185,17 @@ public class Cluster {
         System.out.println();
     }
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
         //getPointBetweenTwoPoint(new Point(-1, 3), new Point(-1, -1), 1);
-        Cluster cluster= new Cluster();
-        List<Point> points= new ArrayList<Point>();
+        Cluster cluster = new Cluster();
+        List<Point> points = new ArrayList<Point>();
         points.add(new Point(0, 2));
         points.add(new Point(1, 2));
         points.add(new Point(2, 2));
         points.add(new Point(1, 1));
         points.add(new Point(1, -1));
-        cluster.points= points;
-        cluster.centrePoint= new Point(1, 0.5);
+        cluster.points = points;
+        cluster.centrePoint = new Point(1, 0.5);
         System.out.println(cluster.coverCluster(1));
         System.exit(1);
     }

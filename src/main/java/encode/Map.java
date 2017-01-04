@@ -8,13 +8,15 @@ import java.util.Random;
  * Created by pc on 23/12/2016.
  */
 public class Map {
+    private List<Point> staticSensors;
+    private List<Point> connectSensors;
     private List<Car> cars;
     private List<Point> targets;
     private double radius;
     private int Weght;
     private int Heigh;
     private int numOfTargets;
-    private long randomSeed;
+    public static long randomSeed;
 
     public Map(double radius, int weght, int heigh, int numOfTargets, long randomSeed) {
         this.radius= radius;
@@ -56,6 +58,22 @@ public class Map {
             car.setCars(CreateCar.createCar(randomSeed, period));
             cars.add(car);
         }
+    }
+
+    public List<Point> getConnectSensors() {
+        return connectSensors;
+    }
+
+    public void setConnectSensors(List<Point> connectSensors) {
+        this.connectSensors = connectSensors;
+    }
+
+    public List<Point> getStaticSensors() {
+        return staticSensors;
+    }
+
+    public void setStaticSensors(List<Point> staticSensors) {
+        this.staticSensors = staticSensors;
     }
 
     public double getRadius() {
