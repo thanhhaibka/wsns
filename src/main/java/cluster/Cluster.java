@@ -112,7 +112,7 @@ public class Cluster {
                 staticSensors.add(point);
                 List<Point> points = new ArrayList<Point>();
                 for (Point p : tempPoints) {
-                    if (p.distanceTo(point)-0.1 > radius) {
+                    if (p.distanceTo(point)-0.01 > radius) {
                         points.add(p);
                     }
                 }
