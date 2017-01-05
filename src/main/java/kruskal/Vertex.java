@@ -18,12 +18,8 @@ public class Vertex extends Cluster{
     public void setNode(Node n) { this.n = n; }
     public Node getNode() { return this.n; }
 
-    public static float simpleDistance(Vertex a, Vertex b) {
-        return 0;
-    }
-
-    public static float euclideanDistance(Vertex a, Vertex b) {
-        return (float) Math.sqrt(Vertex.simpleDistance(a, b));
+    public static double simpleDistance(Vertex a, Vertex b) {
+        return a.getDistance(b);
     }
 
     public Vertex(String id, String name, Cluster cluster) {

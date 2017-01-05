@@ -83,7 +83,7 @@ package draw;//package draw;
 //
 //    public void drawCluster(Graphics g, App app, int rIndex) {
 //        Graphics2D g2d = (Graphics2D) g;
-//        for (int i = 0; i < app.individual.kmean.getNUM_CLUSTERS(); i++) {
+//        for (int i = 0; i < app.individual.mean.getNUM_CLUSTERS(); i++) {
 //            Point p = app.individual.kmean.getCentrePoints().get(i);
 //            g2d.setColor(new Color(163, 163, 224));
 //            g2d.fill(new Ellipse2D.Double(50+p.x * 5 - Individual.R[rIndex] * 5 / 2,50+ p.y * 5 - Individual.R[rIndex] * 5 / 2,

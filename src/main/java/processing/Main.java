@@ -5,6 +5,9 @@ import cluster.Kmean;
 import encode.Car;
 import encode.Map;
 import encode.Point;
+import kruskal.Edge;
+import kruskal.Kruskal;
+import kruskal.Vertex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.Random;
 public class Main {
 
     public static void main(String args[]){
-        firstPhaseProcess();
+        secondPhaseProcess(firstPhaseProcess());
         System.exit(1);
     }
 
@@ -27,7 +30,7 @@ public class Main {
      * cover all the targets
      */
     private static Map firstPhaseProcess(){
-        Map map= new Map(4, 100, 100, 6000, 40000);
+        Map map= new Map(4, 100, 100, 1000, 40000);
         map.initCars(30, 24);
         map.initTargets();
         long t= System.currentTimeMillis();
@@ -38,7 +41,7 @@ public class Main {
             List<Point> staticSensor = new ArrayList<Point>();
             Kmean kmean= new Kmean(map.getTargets(), k);   //number of clusters need to calculate, 20 is only for test
             List<Cluster> clusters= kmean.getClusters();
-            System.out.println("time clustering: "+ (System.currentTimeMillis()- t));
+//            System.out.println("time clustering: "+ (System.currentTimeMillis()- t));
 //            List<Point> staticSensor= new ArrayList<Point>();
             for(Cluster cluster: clusters){
                 staticSensor.addAll(cluster.coverCluster(map.getRadius()));
@@ -48,10 +51,26 @@ public class Main {
                 min= k;
             }
         }
-        System.out.println(min);
-        System.out.println(minValue);
-//        map.setStaticSensors(staticSensor);
-        System.out.println("time phase 1: "+(System.currentTimeMillis()- t));
+//        System.out.println(min);
+//        System.out.println(minValue);
+        List<Point> staticSensor = new ArrayList<Point>();
+        Kmean kmean= new Kmean(map.getTargets(), min);   //number of clusters need to calculate, 20 is only for test
+        List<Cluster> clusters= kmean.getClusters();
+//        System.out.println("time clustering: "+ (System.currentTimeMillis()- t));
+        int i=0;
+        List<Cluster> clusters1= new ArrayList<Cluster>();
+        for(Cluster cluster: clusters){
+            List<Point> tempStaticSensors= cluster.coverCluster(map.getRadius());
+            Cluster cluster1= new Cluster();
+            cluster1.setPoints(tempStaticSensors);
+            cluster1.setCentrePoint(cluster.getCentrePoint());
+            cluster1.setClusterNumber(i);
+            i++;
+            clusters1.add(cluster1);
+            staticSensor.addAll(tempStaticSensors);
+        }
+        map.setStaticSensors(staticSensor);
+//        System.out.println("time phase 1: "+(System.currentTimeMillis()- t));
         //Todo add static sensors in map or output
 //        System.out.println(staticSensor.size());
 
@@ -130,7 +149,53 @@ public class Main {
         //Todo find sensors to connect
         List<Car> cars= map.getCars();
         List<Point> staticSensors= map.getStaticSensors();
+        List<Cluster> clusters = map.getClusters();
 
+        for(Cluster cluster: clusters){
+            List<Point> nearestPoints= new ArrayList<Point>();
+            for(int i=0; i< map.getPeriod(); i++){
+                double minDistance= Double.MAX_VALUE;
+                int minIndex=0;
+                for(int j=0; j< map.getNumOfCars(); j++){
+                    if(minDistance> cluster.getDistance(cars.get(j).getCar(i))){
+                        minDistance= cluster.getDistance(cars.get(j).getCar(i));
+                        minIndex= j;
+                    }
+                }
+                nearestPoints.add(cars.get(minIndex).getCar(i));
+            }
+            Kruskal kruskal= new Kruskal();
+            //add vertexes
+            List<Vertex> vertexes= new ArrayList<Vertex>();
+            vertexes.add(new Vertex(0+"","static", cluster));
+            for(int i=0; i<nearestPoints.size(); i++){
+                vertexes.add(new Vertex((i+1)+"", nearestPoints.get(i).x, nearestPoints.get(i).y));
+            }
+            //add edges
+            List<Edge> edges= new ArrayList<Edge>();
+            for(int i=1;i<vertexes.size()-1; i++){
+                for(int j=i+1; j<vertexes.size(); j++){
+                    edges.add(new Edge(vertexes.get(i), vertexes.get(j),
+                            Math.floor((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/map.getRadius()))));
+                }
+            }
+            //find shortest path
+            List<Edge> shortestPath= kruskal.addEdgeWeightTest(vertexes, edges);
+            double sum= 0.0;
+            for(Edge edge: shortestPath){
+                sum+= edge.getWeight();
+            }
+            System.out.println(sum);
+        }
         return connectSensors;
+    }
+
+    public static Point getCenter(List<Point> points){
+        double x=0, y=0;
+        for(Point point: points){
+            x+=point.x;
+            y+=point.y;
+        }
+        return new Point(x/points.size(), y/points.size());
     }
 }

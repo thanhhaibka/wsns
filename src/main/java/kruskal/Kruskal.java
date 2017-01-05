@@ -37,7 +37,7 @@ public class Kruskal {
     /* Run the tests for size n */
 //        float test1 = randomEdgeWeightTest(seed, n, ne);
 //        float test2 = randomVertexDistanceTest(seed, n, ne);
-
+//
 //        System.out.printf("Test results for size %d:\n", n);
 //        System.out.printf("\trandom edge weight test: %f\n", test1);
 //        System.out.printf("\trandom vertex distance test: %f\n", test2);

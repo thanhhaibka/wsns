@@ -1,5 +1,7 @@
 package encode;
 
+import cluster.Cluster;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,6 +12,7 @@ import java.util.Random;
 public class Map {
     private List<Point> staticSensors;
     private List<Point> connectSensors;
+    private List<Cluster> clusters;
     private List<Car> cars;
     private List<Point> targets;
     private double radius;
@@ -17,6 +20,8 @@ public class Map {
     private int Heigh;
     private int numOfTargets;
     public static long randomSeed;
+    private int numOfCars;
+    private int period;
 
     public Map(double radius, int weght, int heigh, int numOfTargets, long randomSeed) {
         this.radius= radius;
@@ -52,12 +57,38 @@ public class Map {
      */
     public void initCars(int numberOfCar, int period){
         Random rd = new Random(randomSeed);
+        this.numOfCars= numberOfCar;
+        this.period= period;
         cars= new ArrayList<Car>();
         for (int i = 0; i < numberOfCar; i++) {
             Car car = new Car(i + "");
             car.setCars(CreateCar.createCar(randomSeed, period));
             cars.add(car);
         }
+    }
+
+    public int getNumOfCars() {
+        return numOfCars;
+    }
+
+    public void setNumOfCars(int numOfCars) {
+        this.numOfCars = numOfCars;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
+    public List<Cluster> getClusters() {
+        return clusters;
+    }
+
+    public void setClusters(List<Cluster> clusters) {
+        this.clusters = clusters;
     }
 
     public List<Point> getConnectSensors() {
