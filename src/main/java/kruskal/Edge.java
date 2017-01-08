@@ -48,4 +48,8 @@ public class Edge implements Comparable {
 
         return sum;
     }
+
+    public String toString(){
+        return this.u.getId()+"_"+this.v.getId()+"_"+this.weight;
+    }
 }

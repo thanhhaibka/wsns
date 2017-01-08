@@ -29,8 +29,8 @@ public class Main {
      * phase 1:
      * cover all the targets
      */
-    private static Map firstPhaseProcess(){
-        Map map= new Map(4, 100, 100, 600, 40000);
+    public static Map firstPhaseProcess(){
+        Map map= new Map(3, 200, 200, 1000, 40000);
         map.initCars(30, 24);
         map.initTargets();
         long t= System.currentTimeMillis();
@@ -51,7 +51,7 @@ public class Main {
                 min= k;
             }
         }
-//        System.out.println(min);
+        System.out.println(min);
 //        System.out.println(minValue);
         List<Point> staticSensor = new ArrayList<Point>();
         Kmean kmean= new Kmean(map.getTargets(), min);   //number of clusters need to calculate, 20 is only for test
@@ -145,7 +145,7 @@ public class Main {
      * phase 2:
      * connect static sensors with car sensors
      */
-    private static Set<Point> secondPhaseProcess(Map map){
+    public static Set<Point> secondPhaseProcess(Map map){
         //Todo find sensors to connect
 
         List<Point> points= new ArrayList<Point>();
@@ -177,11 +177,20 @@ public class Main {
             for(int i=1;i<vertexes.size()-1; i++){
                 for(int j=i+1; j<vertexes.size(); j++){
                     edges.add(new Edge(vertexes.get(i), vertexes.get(j),
-                            Math.floor((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/(map.getRadius()/2)))));
+                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/(map.getRadius())))));
+//                    edges.add(new Edge(vertexes.get(j), vertexes.get(i),
+//                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/(map.getRadius())))));
                 }
+            }
+            for(int i=1; i<vertexes.size(); i++){
+                double dis= vertexes.get(0).getDistance(vertexes.get(i).getCentrePoint());
+                int value= (int) Math.ceil(dis/(map.getRadius()))-1;
+                edges.add(new Edge(vertexes.get(i), vertexes.get(0), value));
+//                edges.add(new Edge(vertexes.get(0), vertexes.get(i), value));
             }
             //find shortest path
             List<Edge> shortestPath= kruskal.addEdgeWeightTest(vertexes, edges);
+            System.err.println(shortestPath);
             double sum1= 0.0;
             for(Edge edge: shortestPath){
                 sum1+= edge.getWeight();

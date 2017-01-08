@@ -62,7 +62,7 @@ public class Point implements Comparable<Point> {
         if (getClass() != o.getClass())
             return false;
         Point other = (Point) o;
-        if(this.distanceTo(other)>0.1){
+        if(this.distanceTo(other)>0.5){
             return false;
         }
         return true;
