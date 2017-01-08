@@ -9,9 +9,7 @@ import kruskal.Edge;
 import kruskal.Kruskal;
 import kruskal.Vertex;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by prnc on 09/11/2016.
@@ -19,7 +17,9 @@ import java.util.Random;
 public class Main {
 
     public static void main(String args[]){
-        secondPhaseProcess(firstPhaseProcess());
+        Map map= firstPhaseProcess();
+        System.out.println(map.getStaticSensors().size());
+        System.out.println(secondPhaseProcess(map).size());
         System.exit(1);
     }
 
@@ -30,7 +30,7 @@ public class Main {
      * cover all the targets
      */
     private static Map firstPhaseProcess(){
-        Map map= new Map(4, 100, 100, 1000, 40000);
+        Map map= new Map(4, 100, 100, 600, 40000);
         map.initCars(30, 24);
         map.initTargets();
         long t= System.currentTimeMillis();
@@ -69,6 +69,7 @@ public class Main {
             clusters1.add(cluster1);
             staticSensor.addAll(tempStaticSensors);
         }
+        map.setClusters(clusters1);
         map.setStaticSensors(staticSensor);
 //        System.out.println("time phase 1: "+(System.currentTimeMillis()- t));
         //Todo add static sensors in map or output
@@ -144,13 +145,13 @@ public class Main {
      * phase 2:
      * connect static sensors with car sensors
      */
-    private static List<Point> secondPhaseProcess(Map map){
-        List<Point> connectSensors= new ArrayList<Point>();
+    private static Set<Point> secondPhaseProcess(Map map){
         //Todo find sensors to connect
-        List<Car> cars= map.getCars();
-        List<Point> staticSensors= map.getStaticSensors();
-        List<Cluster> clusters = map.getClusters();
 
+        List<Point> points= new ArrayList<Point>();
+        List<Car> cars= map.getCars();
+        List<Cluster> clusters = map.getClusters();
+//        double sum=0.0;
         for(Cluster cluster: clusters){
             List<Point> nearestPoints= new ArrayList<Point>();
             for(int i=0; i< map.getPeriod(); i++){
@@ -176,18 +177,37 @@ public class Main {
             for(int i=1;i<vertexes.size()-1; i++){
                 for(int j=i+1; j<vertexes.size(); j++){
                     edges.add(new Edge(vertexes.get(i), vertexes.get(j),
-                            Math.floor((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/map.getRadius()))));
+                            Math.floor((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/(map.getRadius()/2)))));
                 }
             }
             //find shortest path
             List<Edge> shortestPath= kruskal.addEdgeWeightTest(vertexes, edges);
-            double sum= 0.0;
+            double sum1= 0.0;
             for(Edge edge: shortestPath){
-                sum+= edge.getWeight();
+                sum1+= edge.getWeight();
+                if(edge.getU().getId().equals("0")||edge.getV().getId().equals("0")){
+                    if(edge.getU().getId().equals("0")){
+                        Point nearestPoint= Cluster.getNearestPoint(edge.getV().getCentrePoint(), cluster.getPoints());
+                        points.addAll(drawAPath(nearestPoint, edge.getV().getCentrePoint(), map.getRadius()));
+                    }else{
+                        Point nearestPoint= Cluster.getNearestPoint(edge.getU().getCentrePoint(), cluster.getPoints());
+                        points.addAll(drawAPath(nearestPoint, edge.getU().getCentrePoint(), map.getRadius()));
+                    }
+                }else{
+                    points.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
+                }
             }
-            System.out.println(sum);
+            System.out.println(sum1);
         }
-        return connectSensors;
+        Set<Point> points1= new HashSet<Point>(points);
+        for(int i=0; i<points.size()-1; i++){
+            for(int j=i+1; j<points.size(); j++){
+                if(points.get(i).equals(points.get(j))){
+                    if(points1.contains(points.get(j))) points1.remove(points.get(j));
+                }
+            }
+        }
+        return points1;
     }
 
     public static Point getCenter(List<Point> points){
@@ -197,5 +217,39 @@ public class Main {
             y+=point.y;
         }
         return new Point(x/points.size(), y/points.size());
+    }
+
+    public static List<Point> drawAPath(Point var1, Point var2, double r) {
+        List<Point> points = new ArrayList<Point>();
+        double dx = var2.x - var1.x;
+        double dy = var2.y - var1.y;
+        Double d = Point.getDistance(var1, var2) / (r);
+
+        int temp = (int) Math.floor(d);
+        if (d != temp) temp += 1;
+        if ((var2.x - var1.x) == 0) {
+            for (int i = 0; i < temp; i++) {
+                if (dy > 0) {
+                    points.add(new Point(var1.x, var1.y + Math.abs((i) * r)));
+                } else {
+                    points.add(new Point(var1.x, var1.y - Math.abs((i) * r)));
+                }
+            }
+        } else {
+            double tan = (var2.y - var1.y) / (var2.x - var1.x);
+            double atan = Math.atan(tan);
+            for (int i = 0; i < temp; i++) {
+                if (dx > 0 && dy > 0) {
+                    points.add(new Point(var1.x + Math.abs((i * r + r) * Math.cos(atan)),var1.y + Math.abs((i + 1) * r * Math.sin(atan))));
+                } else if (dx > 0 && dy < 0) {
+                    points.add(new Point(var1.x + Math.abs((i * r + r) * Math.cos(atan)), var1.y - Math.abs((i + 1) * r * Math.sin(atan))));
+                } else if (dx < 0 && dy < 0) {
+                    points.add(new Point(var1.x - Math.abs((i * r + r) * Math.cos(atan)), var1.y - Math.abs((i + 1) * r * Math.sin(atan))));
+                } else if (dx < 0 && dy > 0) {
+                    points.add(new Point(var1.x - Math.abs((i * r + r) * Math.cos(atan)), var1.y + Math.abs((i + 1) * r * Math.sin(atan))));
+                }
+            }
+        }
+        return points;
     }
 }

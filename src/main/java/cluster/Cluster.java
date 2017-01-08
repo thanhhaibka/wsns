@@ -36,6 +36,19 @@ public class Cluster {
         return d;
     }
 
+    public static Point getNearestPoint(Point point, List<Point> points){
+        double min = Double.MAX_VALUE;
+        Point point1= new Point();
+        for (Point p1 : points) {
+            double temp = Point.getDistance(p1, point);
+            if (min > temp) {
+                min = temp;
+                point1= p1;
+            }
+        }
+        return point1;
+    }
+
     public double getDistance(Point c) {
         double min = Double.MAX_VALUE;
         for (Point p1 : points) {

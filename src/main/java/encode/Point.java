@@ -5,7 +5,9 @@ package encode;
  * and open the template in the editor.
  */
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  *
@@ -55,14 +57,12 @@ public class Point implements Comparable<Point> {
 
     @Override
     public boolean equals(Object o){
-        if (this == o)
-            return true;
         if (o == null)
             return false;
         if (getClass() != o.getClass())
             return false;
         Point other = (Point) o;
-        if(x!=other.x || y!=other.y){
+        if(this.distanceTo(other)>0.1){
             return false;
         }
         return true;
@@ -102,10 +102,20 @@ public class Point implements Comparable<Point> {
     }
 
     public double distanceTo(Point that) {
-        return Math.sqrt((this.x - that.x)*(this.x - that.x) + (this.y - that.y)*(this.y - that.y));
+        return Math.sqrt((this.x - that.x) * (this.x - that.x) + (this.y - that.y) * (this.y - that.y));
     }
 
     public int compareTo(Point o) {
         return this.standard()> o.standard()?1:(this.standard()==o.standard()?0:-1);
+    }
+
+    public static void main(String args[]){
+        Point point1= new Point(5,6.001);
+        Point point2= new Point(5,6);
+        Set<Point> points= new HashSet<Point>();
+        points.add(point1);
+//        points.add(point2);
+        if(points.contains(point1)) System.out.println(true);
+        System.out.println(points.size());
     }
 }
