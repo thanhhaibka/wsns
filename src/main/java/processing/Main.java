@@ -201,23 +201,23 @@ public class Main {
         double sum1 = 0.0;
         for (Edge edge : shortestPath) {
             sum1 += edge.getWeight();
-//            if (edge.getU().getId().equals("0") || edge.getV().getId().equals("0")) {
-//                if (edge.getU().getId().equals("0")) {
-//                    Point nearestPoint = Cluster.getNearestPoint(edge.getV().getCentrePoint(), cluster.getPoints());
-//                    points.addAll(drawAPath(nearestPoint, edge.getV().getCentrePoint(), map.getRadius()));
+            if (edge.getU().getId().equals("0") || edge.getV().getId().equals("0")) {
+                if (edge.getU().getId().equals("0")) {
+                    Point nearestPoint = Cluster.getNearestPoint(edge.getV().getCentrePoint(), edge.getU().getPoints());
+                    points.addAll(drawAPath(nearestPoint, edge.getV().getCentrePoint(), map.getRadius()));
 //                    connectedPoint.addAll(drawAPath(nearestPoint, edge.getV().getCentrePoint(), map.getRadius()));
-//                } else {
-//                    Point nearestPoint = Cluster.getNearestPoint(edge.getU().getCentrePoint(), cluster.getPoints());
-//                    points.addAll(drawAPath(nearestPoint, edge.getU().getCentrePoint(), map.getRadius()));
+                } else {
+                    Point nearestPoint = Cluster.getNearestPoint(edge.getU().getCentrePoint(), edge.getU().getPoints());
+                    points.addAll(drawAPath(nearestPoint, edge.getU().getCentrePoint(), map.getRadius()));
 //                    connectedPoint.addAll(drawAPath(nearestPoint, edge.getU().getCentrePoint(), map.getRadius()));
-//                }
-//            } else {
-//                points.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
+                }
+            } else {
+                points.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
 //                connectedPoint.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
-//            }
+            }
         }
 //        connectedPoint.addAll(cluster.getPoints());
-        System.out.println( sum1);
+        System.out.println();
 
         Set<Point> points1 = new HashSet<Point>(points);
         for (int i = 0; i < points.size() - 1; i++) {
