@@ -60,7 +60,7 @@ public class Map {
         cars= new ArrayList<Car>();
         for (int i = 0; i < numOfCars; i++) {
             Car car = new Car(i + "");
-            car.setCars(CreateCar.createCar( period));
+            car.setCars(CreateCar.createCar(period));
             cars.add(car);
         }
     }

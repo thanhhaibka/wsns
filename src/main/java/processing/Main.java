@@ -15,16 +15,16 @@ import java.util.*;
  * Created by prnc on 09/11/2016.
  */
 public class Main {
+    public static int[] radius = {4, 8, 8};
+    public static int[] numberofcars = {10, 20, 30};
+    public static int[] numberoftargets = {600, 800, 1000};
 
     public static void main(String args[]) {
-        int[] radius= {4, 8, 8};
-        int[] numberofcars= {10, 20, 30};
-        int[] numberoftargets= {600, 800, 1000};
-        double average= 0.0;
+        double average = 0.0;
         System.out.println("soxe sotarget radius trungbinh30lanchay");
-        for(int m=0; m<3; m++) {
+        for (int m = 0; m < 3; m++) {
             for (int n = 0; n < 3; n++) {
-                for(int p=0; p<3; p++) {
+                for (int p = 0; p < 3; p++) {
                     for (int i = 0; i < 30; i++) {
                         Map map = new Map(radius[p], 100, 100, numberoftargets[n], 40000);
                         map.setNumOfCars(numberofcars[m]);
@@ -32,8 +32,10 @@ public class Main {
                         map = firstPhaseProcess(map);
                         Set<Point> points = secondPhaseProcessTemp(map);
                         average += points.size();
+                        average += map.getStaticSensors().size();
+                        average += connectInCluster(map).size();
                     }
-                    System.out.println(m+" "+n+" "+p+" "+(average/30));
+                    System.out.println(m + " " + n + " " + p + " " + (average / 30));
                 }
             }
         }
@@ -67,7 +69,7 @@ public class Main {
                 min = k;
             }
         }
-        System.out.println(min);
+//        System.out.println(min);
 //        System.out.println(minValue);
         List<Point> staticSensor = new ArrayList<Point>();
         Kmean kmean = new Kmean(map.getTargets(), min);   //number of clusters need to calculate, 20 is only for test
@@ -167,7 +169,6 @@ public class Main {
         List<Point> points = new ArrayList<Point>();
         List<Point> connectedPoint = new ArrayList<Point>();
         List<Car> cars = map.getCars();
-        List<Point> staticSensors = map.getStaticSensors();
         List<Cluster> clusters = map.getClusters();
 //        double sum=0.0;
         List<Point> nearestPoints = new ArrayList<Point>();
@@ -187,7 +188,7 @@ public class Main {
         Kruskal kruskal = new Kruskal();
         //add vertexes
         List<Vertex> vertexes = new ArrayList<Vertex>();
-        for(int i=0; i<clusters.size(); i++){
+        for (int i = 0; i < clusters.size(); i++) {
             vertexes.add(new Vertex(0 + "", "static", clusters.get(i)));
         }
         for (int i = 0; i < nearestPoints.size(); i++) {
@@ -204,7 +205,7 @@ public class Main {
             }
         }
         for (int i = clusters.size(); i < vertexes.size(); i++) {
-            for(int j=0; j<clusters.size(); j++){
+            for (int j = 0; j < clusters.size(); j++) {
                 double dis = clusters.get(j).getDistance(vertexes.get(i).getCentrePoint());
                 int value = (int) Math.ceil(dis / (map.getRadius())) - 1;
                 edges.add(new Edge(vertexes.get(i), vertexes.get(j), value));
@@ -233,7 +234,7 @@ public class Main {
             }
         }
 //        connectedPoint.addAll(cluster.getPoints());
-        System.out.println(points.size());
+//        System.out.println(points.size());
 
         Set<Point> points1 = new HashSet<Point>(points);
         for (int i = 0; i < points.size() - 1; i++) {
@@ -244,6 +245,32 @@ public class Main {
             }
         }
         return points1;
+    }
+
+    public static List<Point> connectInCluster(Map map) {
+        List<Point> points = new ArrayList<Point>();
+        for (Cluster cluster : map.getClusters()) {
+            Kruskal kruskal = new Kruskal();
+            List<Vertex> vertexes = new ArrayList<Vertex>();
+            for (int i = 0; i < cluster.getPoints().size(); i++) {
+                vertexes.add(new Vertex(0 + "", cluster.getPoints().get(i).x, cluster.getPoints().get(i).y));
+            }
+            //add edges
+            List<Edge> edges = new ArrayList<Edge>();
+            for (int i = 0; i < vertexes.size() - 1; i++) {
+                for (int j = i + 1; j < vertexes.size(); j++) {
+                    edges.add(new Edge(vertexes.get(i), vertexes.get(j),
+                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j)) / (map.getRadius())))));
+                    edges.add(new Edge(vertexes.get(j), vertexes.get(i),
+                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j)) / (map.getRadius())))));
+                }
+            }
+            List<Edge> shortestPath = kruskal.addEdgeWeightTest(vertexes, edges);
+            for (Edge edge : shortestPath) {
+                points.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
+            }
+        }
+        return points;
     }
 
     public static Set<Point> secondPhaseProcess(Map map) {
@@ -310,7 +337,7 @@ public class Main {
             }
             //find shortest path
             List<Edge> shortestPath = kruskal.addEdgeWeightTest(vertexes, edges);
-            System.err.println(cluster.getClusterNumber() + " " + shortestPath);
+//            System.err.println(cluster.getClusterNumber() + " " + shortestPath);
             double sum1 = 0.0;
             for (Edge edge : shortestPath) {
                 sum1 += edge.getWeight();
@@ -330,7 +357,7 @@ public class Main {
                 }
             }
             connectedPoint.addAll(cluster.getPoints());
-            System.out.println(cluster.getClusterNumber() + " " + sum1);
+//            System.out.println(cluster.getClusterNumber() + " " + sum1);
         }
         Set<Point> points1 = new HashSet<Point>(points);
         for (int i = 0; i < points.size() - 1; i++) {
@@ -340,7 +367,7 @@ public class Main {
                 }
             }
         }
-        System.out.println(points1.size());
+//        System.out.println(points1.size());
         return points1;
     }
 
@@ -359,8 +386,7 @@ public class Main {
         double dy = var2.y - var1.y;
         Double d = Point.getDistance(var1, var2) / (r);
 
-        int temp = (int) Math.ceil(d)-1;
-        if (d != temp) temp += 1;
+        int temp = (int) Math.ceil(d) - 1;
         if ((var2.x - var1.x) == 0) {
             for (int i = 0; i < temp; i++) {
                 if (dy > 0) {
