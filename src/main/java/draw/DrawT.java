@@ -34,7 +34,10 @@ public class DrawT extends JFrame {
     @Override
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        Map map = Main.firstPhaseProcess();
+        Map map = new Map(Main.radius[0], 100, 100, Main.numberoftargets[0], 40000);
+        map.setNumOfCars(Main.numberofcars[0]);
+        map.setPeriod(24);
+        map = Main.firstPhaseProcess(map);
 //        g2d.setColor(Color.RED);
 //        for (Point point : map.getTargets()) {
 //            g2d.fill(new Ellipse2D.Double(point.x*5+50-2.5, point.y*5+50-2.5, 5, 5));
