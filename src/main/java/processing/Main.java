@@ -150,6 +150,7 @@ public class Main {
 
         List<Point> points= new ArrayList<Point>();
         List<Car> cars= map.getCars();
+        List<Point> staticSensors= map.getStaticSensors();
         List<Cluster> clusters = map.getClusters();
 //        double sum=0.0;
         for(Cluster cluster: clusters){
@@ -163,7 +164,24 @@ public class Main {
                         minIndex= j;
                     }
                 }
-                nearestPoints.add(cars.get(minIndex).getCar(i));
+                if(points.size()!=0){
+                    double minDistance1= Double.MAX_VALUE;
+                    int minIndex1=0;
+                    for(int j=0; j<points.size();j++){
+                        if(minDistance1> cluster.getDistance(points.get(j))){
+                            minDistance1= cluster.getDistance(points.get(j));
+                            minIndex1= j;
+                        }
+                    }
+                    if(minDistance>minDistance1){
+                        nearestPoints.add(cars.get(minIndex).getCar(i));
+                    }else{
+                        nearestPoints.add(points.get(minIndex1));
+                    }
+                }else{
+                    nearestPoints.add(cars.get(minIndex).getCar(i));
+                }
+
             }
             Kruskal kruskal= new Kruskal();
             //add vertexes
@@ -178,19 +196,19 @@ public class Main {
                 for(int j=i+1; j<vertexes.size(); j++){
                     edges.add(new Edge(vertexes.get(i), vertexes.get(j),
                             Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/(map.getRadius())))));
-//                    edges.add(new Edge(vertexes.get(j), vertexes.get(i),
-//                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/(map.getRadius())))));
+                    edges.add(new Edge(vertexes.get(j), vertexes.get(i),
+                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j))/(map.getRadius())))));
                 }
             }
             for(int i=1; i<vertexes.size(); i++){
                 double dis= vertexes.get(0).getDistance(vertexes.get(i).getCentrePoint());
                 int value= (int) Math.ceil(dis/(map.getRadius()))-1;
                 edges.add(new Edge(vertexes.get(i), vertexes.get(0), value));
-//                edges.add(new Edge(vertexes.get(0), vertexes.get(i), value));
+                edges.add(new Edge(vertexes.get(0), vertexes.get(i), value));
             }
             //find shortest path
             List<Edge> shortestPath= kruskal.addEdgeWeightTest(vertexes, edges);
-            System.err.println(shortestPath);
+            System.err.println(cluster.getClusterNumber()+" " +shortestPath);
             double sum1= 0.0;
             for(Edge edge: shortestPath){
                 sum1+= edge.getWeight();
@@ -206,7 +224,7 @@ public class Main {
                     points.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
                 }
             }
-            System.out.println(sum1);
+            System.out.println(cluster.getClusterNumber()+" "+sum1);
         }
         Set<Point> points1= new HashSet<Point>(points);
         for(int i=0; i<points.size()-1; i++){
