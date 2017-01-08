@@ -17,9 +17,26 @@ import java.util.*;
 public class Main {
 
     public static void main(String args[]) {
-        Map map = firstPhaseProcess();
-        System.out.println(map.getStaticSensors().size());
-        System.out.println(secondPhaseProcessTemp(map).size());
+        int[] radius= {4, 8, 8};
+        int[] numberofcars= {10, 20, 30};
+        int[] numberoftargets= {600, 800, 1000};
+        double average= 0.0;
+        System.out.println("soxe sotarget radius trungbinh30lanchay");
+        for(int m=0; m<3; m++) {
+            for (int n = 0; n < 3; n++) {
+                for(int p=0; p<3; p++) {
+                    for (int i = 0; i < 30; i++) {
+                        Map map = new Map(radius[p], 100, 100, numberoftargets[n], 40000);
+                        map.setNumOfCars(numberofcars[m]);
+                        map.setPeriod(24);
+                        map = firstPhaseProcess(map);
+                        Set<Point> points = secondPhaseProcessTemp(map);
+                        average += points.size();
+                    }
+                    System.out.println(m+" "+n+" "+p+" "+(average/30));
+                }
+            }
+        }
         System.exit(1);
     }
 
@@ -29,9 +46,8 @@ public class Main {
      * phase 1:
      * cover all the targets
      */
-    public static Map firstPhaseProcess() {
-        Map map = new Map(3, 200, 200, 1000, 40000);
-        map.initCars(30, 24);
+    public static Map firstPhaseProcess(Map map) {
+        map.initCars();
         map.initTargets();
         long t = System.currentTimeMillis();
         int min = 1;
@@ -217,7 +233,7 @@ public class Main {
             }
         }
 //        connectedPoint.addAll(cluster.getPoints());
-        System.out.println();
+        System.out.println(points.size());
 
         Set<Point> points1 = new HashSet<Point>(points);
         for (int i = 0; i < points.size() - 1; i++) {
@@ -324,6 +340,7 @@ public class Main {
                 }
             }
         }
+        System.out.println(points1.size());
         return points1;
     }
 
@@ -342,7 +359,7 @@ public class Main {
         double dy = var2.y - var1.y;
         Double d = Point.getDistance(var1, var2) / (r);
 
-        int temp = (int) Math.floor(d);
+        int temp = (int) Math.ceil(d)-1;
         if (d != temp) temp += 1;
         if ((var2.x - var1.x) == 0) {
             for (int i = 0; i < temp; i++) {
