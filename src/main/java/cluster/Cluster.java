@@ -103,6 +103,9 @@ public class Cluster {
         //Todo find sensors to cover this cluster: how many? phuong phap thich hop?
         while (true) {
             double maxDistance = 0.0;
+            if(tempPoints.size()==0){
+                break;
+            }
             Point maxPoint = tempPoints.get(0);
             for (Point point : tempPoints) {
                 double distance = tempCenter.distanceTo(point);
