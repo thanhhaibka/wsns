@@ -10,8 +10,8 @@ import java.util.Random;
 public class CreateCar {
     public static final double v = 15;
 
-    public static List<CarInTime> createCar(long seed, int T) {
-        Random rd = new Random(seed);
+    public static List<CarInTime> createCar(int T) {
+        Random rd = new Random();
         List<CarInTime> carInTimes = new ArrayList<CarInTime>();
         double x = rd.nextDouble() *100;
         double y = rd.nextDouble() *100;

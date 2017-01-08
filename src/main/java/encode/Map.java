@@ -55,14 +55,12 @@ public class Map {
      * @author haint
      * initialize cars in this map
      */
-    public void initCars(int numberOfCar, int period){
+    public void initCars(){
         Random rd = new Random(randomSeed);
-        this.numOfCars= numberOfCar;
-        this.period= period;
         cars= new ArrayList<Car>();
-        for (int i = 0; i < numberOfCar; i++) {
+        for (int i = 0; i < numOfCars; i++) {
             Car car = new Car(i + "");
-            car.setCars(CreateCar.createCar(randomSeed, period));
+            car.setCars(CreateCar.createCar( period));
             cars.add(car);
         }
     }
