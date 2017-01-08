@@ -30,7 +30,7 @@ public class Main {
      * cover all the targets
      */
     public static Map firstPhaseProcess() {
-        Map map = new Map(3, 200, 200, 1000, 40000);
+        Map map = new Map(5, 200, 200, 600, 40000);
         map.initCars(30, 24);
         map.initTargets();
         long t = System.currentTimeMillis();
@@ -231,6 +231,103 @@ public class Main {
     }
 
     public static Set<Point> secondPhaseProcess(Map map) {
+        //Todo find sensors to connect
+
+        List<Point> points = new ArrayList<Point>();
+        List<Point> connectedPoint = new ArrayList<Point>();
+        List<Car> cars = map.getCars();
+        List<Point> staticSensors = map.getStaticSensors();
+        List<Cluster> clusters = map.getClusters();
+//        double sum=0.0;
+        for (Cluster cluster : clusters) {
+            List<Point> nearestPoints = new ArrayList<Point>();
+            for (int i = 0; i < map.getPeriod(); i++) {
+                double minDistance = Double.MAX_VALUE;
+                int minIndex = 0;
+                for (int j = 0; j < map.getNumOfCars(); j++) {
+                    if (minDistance > cluster.getDistance(cars.get(j).getCar(i))) {
+                        minDistance = cluster.getDistance(cars.get(j).getCar(i));
+                        minIndex = j;
+                    }
+                }
+                if (connectedPoint.size() != 0) {
+                    double minDistance1 = Double.MAX_VALUE;
+                    int minIndex1 = 0;
+                    for (int j = 0; j < connectedPoint.size(); j++) {
+                        if (minDistance1 > cluster.getDistance(connectedPoint.get(j))) {
+                            minDistance1 = cluster.getDistance(connectedPoint.get(j));
+                            minIndex1 = j;
+                        }
+                    }
+                    if (minDistance > minDistance1) {
+                        nearestPoints.add(cars.get(minIndex).getCar(i));
+                    } else {
+                        nearestPoints.add(connectedPoint.get(minIndex1));
+                    }
+                } else {
+                    nearestPoints.add(cars.get(minIndex).getCar(i));
+                }
+
+            }
+            Kruskal kruskal = new Kruskal();
+            //add vertexes
+            List<Vertex> vertexes = new ArrayList<Vertex>();
+            vertexes.add(new Vertex(0 + "", "static", cluster));
+            for (int i = 0; i < nearestPoints.size(); i++) {
+                vertexes.add(new Vertex((i + 1) + "", nearestPoints.get(i).x, nearestPoints.get(i).y));
+            }
+            //add edges
+            List<Edge> edges = new ArrayList<Edge>();
+            for (int i = 1; i < vertexes.size() - 1; i++) {
+                for (int j = i + 1; j < vertexes.size(); j++) {
+                    edges.add(new Edge(vertexes.get(i), vertexes.get(j),
+                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j)) / (map.getRadius())))));
+                    edges.add(new Edge(vertexes.get(j), vertexes.get(i),
+                            Math.round((Vertex.simpleDistance(vertexes.get(i), vertexes.get(j)) / (map.getRadius())))));
+                }
+            }
+            for (int i = 1; i < vertexes.size(); i++) {
+                double dis = vertexes.get(0).getDistance(vertexes.get(i).getCentrePoint());
+                int value = (int) Math.ceil(dis / (map.getRadius())) - 1;
+                edges.add(new Edge(vertexes.get(i), vertexes.get(0), value));
+                edges.add(new Edge(vertexes.get(0), vertexes.get(i), value));
+            }
+            //find shortest path
+            List<Edge> shortestPath = kruskal.addEdgeWeightTest(vertexes, edges);
+            System.err.println(cluster.getClusterNumber() + " " + shortestPath);
+            double sum1 = 0.0;
+            for (Edge edge : shortestPath) {
+                sum1 += edge.getWeight();
+                if (edge.getU().getId().equals("0") || edge.getV().getId().equals("0")) {
+                    if (edge.getU().getId().equals("0")) {
+                        Point nearestPoint = Cluster.getNearestPoint(edge.getV().getCentrePoint(), cluster.getPoints());
+                        points.addAll(drawAPath(nearestPoint, edge.getV().getCentrePoint(), map.getRadius()));
+                        connectedPoint.addAll(drawAPath(nearestPoint, edge.getV().getCentrePoint(), map.getRadius()));
+                    } else {
+                        Point nearestPoint = Cluster.getNearestPoint(edge.getU().getCentrePoint(), cluster.getPoints());
+                        points.addAll(drawAPath(nearestPoint, edge.getU().getCentrePoint(), map.getRadius()));
+                        connectedPoint.addAll(drawAPath(nearestPoint, edge.getU().getCentrePoint(), map.getRadius()));
+                    }
+                } else {
+                    points.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
+                    connectedPoint.addAll(drawAPath(edge.getU().getCentrePoint(), edge.getV().getCentrePoint(), map.getRadius()));
+                }
+            }
+            connectedPoint.addAll(cluster.getPoints());
+            System.out.println(cluster.getClusterNumber() + " " + sum1);
+        }
+        Set<Point> points1 = new HashSet<Point>(points);
+        for (int i = 0; i < points.size() - 1; i++) {
+            for (int j = i + 1; j < points.size(); j++) {
+                if (points.get(i).equals(points.get(j))) {
+                    if (points1.contains(points.get(j))) points1.remove(points.get(j));
+                }
+            }
+        }
+        return points1;
+    }
+
+    public static Set<Point> secondPhaseProcessTemp2(Map map) {
         //Todo find sensors to connect
 
         List<Point> points = new ArrayList<Point>();

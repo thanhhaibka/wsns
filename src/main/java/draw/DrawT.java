@@ -49,10 +49,10 @@ public class DrawT extends JFrame {
             }
         }
 
-//        Set<Point> points = Main.secondPhaseProcess(map);
-//        g2d.setColor(Color.green);
-//        for (Point point : points) {
-//            g2d.draw(new Ellipse2D.Double((point.x-map.getRadius()*2)*5+50, (point.y-map.getRadius()*2)*5+50, map.getRadius() * 20, map.getRadius() * 20));
-//        }
+        Set<Point> points = Main.secondPhaseProcessTemp(map);
+        g2d.setColor(Color.green);
+        for (Point point : points) {
+            g2d.draw(new Ellipse2D.Double((point.x-map.getRadius()*2)*5+50, (point.y-map.getRadius()*2)*5+50, map.getRadius() * 20, map.getRadius() * 20));
+        }
     }
 }
