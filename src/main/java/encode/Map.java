@@ -56,7 +56,7 @@ public class Map {
      * initialize cars in this map
      */
     public void initCars(){
-        Random rd = new Random(randomSeed);
+        Random rd = new Random();
         cars= new ArrayList<Car>();
         for (int i = 0; i < numOfCars; i++) {
             Car car = new Car(i + "");
