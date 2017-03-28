@@ -3,6 +3,7 @@ package encode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import encode.Map;
 
 /**
  * Created by prnc on 20/08/2016.
@@ -13,8 +14,8 @@ public class CreateCar {
     public static List<CarInTime> createCar(int T) {
         Random rd = new Random();
         List<CarInTime> carInTimes = new ArrayList<CarInTime>();
-        double x = rd.nextDouble() *100;
-        double y = rd.nextDouble() *100;
+        double x = rd.nextDouble() *200;  /* It should be Map.getWeight()*/
+        double y = rd.nextDouble() *200;  /* It should be Map.getHeight()*/
         Point p = new Point(x, y);
 
         carInTimes.add(new CarInTime(x, y, 0));
@@ -58,12 +59,12 @@ public class CreateCar {
         if (p.x <= 0) {
             p.x = 0;
         } else if (p.x >= 100) {
-            p.x = 100;
+            p.x = 200;
         }
         if (p.y <= 0) {
             p.y = 0;
         } else if (p.y >= 100) {
-            p.y = 100;
+            p.y = 200;
         }
         return p;
     }

@@ -35,6 +35,29 @@ public class Cluster {
         }
         return d;
     }
+    /* This method get 2 points which are nearest of 2 cluster*/
+    public List<Point> getPairOfNearestPoint(Cluster cluster){
+        List<Point> twoPoints = new ArrayList<Point>();
+        List<Point> listPoints1 = this.points;
+        List<Point> listPoints2 = cluster.getPoints();
+        int index1 = -1;
+        int index2 = -1;
+        double minDis = Double.MAX_VALUE;
+        for (int i = 0; i < listPoints1.size(); i++){
+            for (int j = 0; j < listPoints2.size(); j++){
+                if (Point.getDistance(listPoints1.get(i),listPoints2.get(j)) < minDis){
+                    index1 = i;
+                    index2 = j;
+                    minDis = Point.getDistance(listPoints1.get(i),listPoints2.get(j));
+                }
+            }
+        }
+        if ((index1 >= 0) && (index2 >= 0)){
+            twoPoints.add(listPoints1.get(index1));
+            twoPoints.add(listPoints2.get(index2));
+        }
+        return twoPoints;
+    }
 
     public static Point getNearestPoint(Point point, List<Point> points){
         double min = Double.MAX_VALUE;
@@ -96,7 +119,7 @@ public class Cluster {
      * @author haint
      * return sensors to cover this cluster of targets.
      */
-    public List<Point> coverCluster(double radius) {
+    public List<Point> coverCluster(double radius) {    /* radius here is sensing radius*/
         List<Point> staticSensors = new ArrayList<Point>();
         List<Point> tempPoints = new ArrayList<Point>(points);
         Point tempCenter = new Point(centrePoint.x, centrePoint.y);
@@ -106,6 +129,7 @@ public class Cluster {
             if(tempPoints.size()==0){
                 break;
             }
+            /* Find the farest point*/
             Point maxPoint = tempPoints.get(0);
             for (Point point : tempPoints) {
                 double distance = tempCenter.distanceTo(point);
@@ -127,6 +151,8 @@ public class Cluster {
 //                System.out.println(point+" "+clusterNumber);
                 staticSensors.add(point);
                 List<Point> points = new ArrayList<Point>();
+
+                /* ?????????? */
                 for (Point p : tempPoints) {
                     if (p.distanceTo(point)-0.01 > radius) {
                         points.add(p);
@@ -145,7 +171,8 @@ public class Cluster {
         }
         return staticSensors;
     }
-
+    /*  What does this method do????*/
+    /*  Place static sensor on the edge as heuristic algorithm*/
     public Point getPointBetweenTwoPoint(Point sourcePoint, Point destPoint, double r) {
         Point point = new Point();
         if (sourcePoint.x == destPoint.x) {
@@ -200,6 +227,7 @@ public class Cluster {
         }
         System.out.println();
     }
+
 
     public static void main(String args[]) {
         //getPointBetweenTwoPoint(new Point(-1, 3), new Point(-1, -1), 1);

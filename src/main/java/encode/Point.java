@@ -62,10 +62,12 @@ public class Point implements Comparable<Point> {
         if (getClass() != o.getClass())
             return false;
         Point other = (Point) o;
-        if(this.distanceTo(other)>0.5){
-            return false;
-        }
+//        if(this.distanceTo(other)>0.5){
+//            return false;
+//        }
+        if ((this.x == other.x) && (this.y == other.y))
         return true;
+        return false;
     }
 
     public static int minYOrderedCompareTo(Point p1, Point p2) {
@@ -79,6 +81,16 @@ public class Point implements Comparable<Point> {
         double x = (p1.x + p2.x) / 2;
         double y = (p1.y + p2.y) / 2;
         return new Point(x, y);
+    }
+
+    /*Just for testing*/
+    public boolean smallerThan(Point p){
+        if (this.x < p.x){
+            return true;
+        } else if (this.x > p.x)
+            return false;
+        else if (this.y < p.y) return true;
+        else return false;
     }
 
     /**

@@ -22,6 +22,7 @@ public class Map {
     public static long randomSeed;
     private int numOfCars;
     private int period;
+    private int numberOfStaticSensorToCover;
 
     public Map(double radius, int weght, int heigh, int numOfTargets, long randomSeed) {
         this.radius= radius;
@@ -42,8 +43,8 @@ public class Map {
         targets= new ArrayList<Point>();
         for (int i = 0; i < numOfTargets; i++) {
             do{
-                double xCoor = rd.nextDouble() * 100;
-                double yCoor = rd.nextDouble() * 100;
+                double xCoor = rd.nextDouble() * this.getWeght();
+                double yCoor = rd.nextDouble() * this.getHeigh();
                 tempPoint= new Point(xCoor, yCoor);
             }while (targets.contains(tempPoint));
             targets.add(tempPoint);
@@ -151,5 +152,13 @@ public class Map {
 
     public void setNumOfTargets(int numOfTargets) {
         this.numOfTargets = numOfTargets;
+    }
+
+    public int getNumberOfStaticSensorToCover() {
+        return numberOfStaticSensorToCover;
+    }
+
+    public void setNumberOfStaticSensorToCover(int numberOfStaticSensorToCover) {
+        this.numberOfStaticSensorToCover = numberOfStaticSensorToCover;
     }
 }
